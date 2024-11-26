@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <!-- Background -->
+  <rect width="1600" height="900" fill="#fff7e6" />
+  
+  <!-- Pizza -->
+  <circle cx="200" cy="200" r="80" fill="#f1c40f" />
+  <path d="M200,200 L260,260 A80,80 0 0,1 200,120 Z" fill="#e74c3c" />
+  <circle cx="220" cy="180" r="10" fill="#c0392b" />
+  <circle cx="180" cy="220" r="10" fill="#c0392b" />
+  
+  <!-- Burger -->
+  <rect x="400" y="700" width="200" height="30" fill="#d35400" />
+  <rect x="400" y="670" width="200" height="20" fill="#27ae60" />
+  <rect x="400" y="640" width="200" height="30" fill="#f39c12" />
+  <rect x="400" y="610" width="200" height="20" fill="#c0392b" />
+  <rect x="400" y="580" width="200" height="30" fill="#e67e22" />
+  
+  <!-- Ice Cream -->
+  <path d="M1100,600 L1150,700 L1050,700 Z" fill="#d35400" />
+  <circle cx="1100" cy="580" r="50" fill="#e74c3c" />
+  <circle cx="1070" cy="560" r="30" fill="#f39c12" />
+  <circle cx="1130" cy="560" r="30" fill="#8e44ad" />
+
+  <!-- Donut -->
+  <circle cx="1400" cy="300" r="50" fill="#e67e22" />
+  <circle cx="1400" cy="300" r="30" fill="#fff7e6" />
+  <circle cx="1370" cy="280" r="5" fill="#c0392b" />
+  <circle cx="1410" cy="320" r="5" fill="#27ae60" />
+  <circle cx="1430" cy="290" r="5" fill="#3498db" />
+</svg>

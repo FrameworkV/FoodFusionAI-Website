@@ -1,9 +1,9 @@
-import Loader from '@/components/Loader';
+import Loader from '@/components/loader';
 import { useAuthContext } from '@/context/AuthProvider'
 import { Navigate, Outlet } from 'react-router-dom'
 
 const RootLayout = () => {
-    const {isLoading, isLoggedIn, user, token } = useAuthContext();
+    const {isLoading, isLoggedIn} = useAuthContext();
     if(isLoading) return <Loader/>
     if(!isLoading && !isLoggedIn) return <Navigate to='/sign-in'/>
     return (

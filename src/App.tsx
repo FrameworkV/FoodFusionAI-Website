@@ -1,5 +1,3 @@
-import { Input } from './components/ui/input'
-import { Button } from './components/ui/button'
 import { Route, Routes } from 'react-router-dom'
 import AuthLayout from './_auth/_layout'
 import { SignIn, SignUp } from './_auth'

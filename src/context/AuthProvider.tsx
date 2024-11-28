@@ -1,23 +1,20 @@
 import { UserType } from "@/types/userTypes";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { AuthContextType } from "./AuthContextType";
 
-interface AuthContextType {
-    isLoggedIn: Boolean;
-    setIsLoggedIn: Function;
-    user: any;
-    setUser: Function;
-    token: string;
-    setToken: Function;
-    isLoading: Boolean;
-    setIsLoading: Function;
-    logout: Function;
-}
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = () => {
+    const context = useContext(AuthContext);
+    if(!context){
+        throw new Error("useAuthContext must be used within AuthProvider");
+    }
+    return context;
+};
 
-const AuthProvider = ({children})=>{
+const AuthProvider = ({children}:{children: ReactNode})=>{
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
     const [user, setUser] = useState<UserType>({
         username:"",

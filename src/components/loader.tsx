@@ -1,4 +1,3 @@
-import React from 'react'
 import loaderLogo from "@/assets/loaderLogo.png"
 
 const Loader = () => {

@@ -3,10 +3,10 @@ import { Input } from '@/components/ui/input'
 import { useAuthContext } from '@/context/AuthProvider'
 import { signIn } from '@/lib/api'
 import { SignInType } from '@/types/authTypes'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const SignIn = () => {
-  const {user, setUser, setToken, setIsLoggedIn, setIsLoading} = useAuthContext();
+  const {setUser, setToken, setIsLoggedIn, setIsLoading} = useAuthContext();
 
   const [credentials, setCredentials] = useState<SignInType>({ username: "", password: "" });
 

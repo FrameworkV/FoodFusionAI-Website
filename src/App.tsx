@@ -2,7 +2,8 @@ import { Route, Routes } from 'react-router-dom'
 import AuthLayout from './_auth/_layout'
 import { SignIn, SignUp } from './_auth'
 import RootLayout from './_root/_layout'
-import { Home } from './_root/pages'
+import { Home, Storage } from './_root/pages'
+import RootSidebar from './_root/_app-sidebar'
 
 function App() {
 
@@ -15,7 +16,10 @@ function App() {
       </Route>
       {/* Protected Routes */}
       <Route element={<RootLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route element={<RootSidebar />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/storage" element={<Storage />} />
+        </Route>
       </Route>
     </Routes>
   )

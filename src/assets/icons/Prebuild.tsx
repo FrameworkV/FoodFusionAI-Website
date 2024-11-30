@@ -1,4 +1,3 @@
-import React from 'react'
 import settings from '../../assets/icons/settings.svg'
 
 const SettingsIcon = () => {

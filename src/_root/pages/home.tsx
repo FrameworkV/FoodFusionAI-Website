@@ -1,13 +1,10 @@
-import React from 'react'
-import RootLayout from '../_layout'
-import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/context/AuthProvider';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/app-sidebar';
 import TypewriterComponent from 'typewriter-effect';
 
 const Home = () => {
-  const { logout, user } = useAuthContext();
+  const { user } = useAuthContext();
   //temporary logout function
 
   return (

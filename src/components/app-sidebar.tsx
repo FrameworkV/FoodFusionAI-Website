@@ -1,12 +1,12 @@
-import React from 'react'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarSeparator } from './ui/sidebar'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu'
-import { Archive, Bolt, ChevronsUpDown, CookingPot, Ellipsis, House, LogOut, Settings, Settings2, SettingsIcon, User } from 'lucide-react'
+import { Archive, Bolt, ChevronsUpDown, CookingPot, Ellipsis, House, LogOut, Settings2, User } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthProvider'
 import logo from "@/assets/logo.png"
+import { UserType } from '@/types/userTypes'
 
-const AdvancedProfile = ({ user }) => {
+const AdvancedProfile = ({ user }:{user: UserType}) => {
     const { logout } = useAuthContext();
     return (
         <DropdownMenu>
@@ -58,7 +58,7 @@ const AdvancedProfile = ({ user }) => {
 }
 
 
-const AppSidebar = ({ user }) => {
+const AppSidebar = ({ user }:{user: UserType}) => {
     return (
         <Sidebar>
             <SidebarHeader>

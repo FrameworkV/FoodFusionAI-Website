@@ -3,7 +3,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input'
 import { useAuthContext } from '@/context/AuthProvider'
 import { useToast } from '@/hooks/use-toast'
-import { signIn } from '@/lib/api'
+import { signIn } from '@/lib/api/auth'
 import { SignInType } from '@/types/authTypes'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'

@@ -20,11 +20,10 @@ const createAccount = async (username: string, email: string, password: string) 
             body: JSON.stringify({ username, email, password }),
         });
         if(!response.ok) throw new Error("Error creating account");
-        return true; 
+        return signIn(username, password);
     } catch (error) {
         console.log("error:", error);
-        // throw new Error("Error creating account");
-        return false;
+        throw new Error("Error creating account");
     }
 }
 

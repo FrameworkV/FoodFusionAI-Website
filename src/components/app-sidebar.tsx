@@ -5,6 +5,7 @@ import { Archive, Bolt, ChevronsUpDown, CookingPot, Ellipsis, House, LogOut, Set
 import { useAuthContext } from '@/context/AuthProvider'
 import logo from "@/assets/logo.png"
 import { UserType } from '@/types/userTypes'
+import { Link } from 'react-router-dom'
 
 const AdvancedProfile = ({ user }:{user: UserType}) => {
     const { logout } = useAuthContext();
@@ -93,7 +94,7 @@ const AppSidebar = ({ user }:{user: UserType}) => {
                         <SidebarMenuItem>
                             <SidebarMenuButton>
                                 <Archive size={16} />
-                                Storage
+                                <Link to='/storage'>Storage</Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>

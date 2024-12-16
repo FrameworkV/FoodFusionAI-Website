@@ -1,7 +1,7 @@
 const Storage = () => {
   return (
     <>
-      <h1>Storage</h1>
+      <h1>This page is currently under development.</h1>
     </>
   )
 }

@@ -1,14 +1,21 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarSeparator } from './ui/sidebar'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
-import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu'
-import { Archive, Bolt, ChevronsUpDown, CookingPot, Ellipsis, House, LogOut, Settings2, User } from 'lucide-react'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarSeparator } from '../../components/ui/sidebar'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../components/ui/dropdown-menu'
+import { ChevronsUpDown, Ellipsis, LogOut, Settings2, User } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthProvider'
 import logo from "@/assets/logo.png"
 import { UserType } from '@/types/userTypes'
 import { Link } from 'react-router-dom'
+import { SidebarLink } from '../../components/types'
+import ManageAccountModal from './manage-account-modal'
+import { Dialog } from '@/components/ui/dialog'
+import { useState } from 'react'
 
-const AdvancedProfile = ({ user }:{user: UserType}) => {
+const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpenDialog: () => void }) => {
+
     const { logout } = useAuthContext();
+
+
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -27,12 +34,8 @@ const AdvancedProfile = ({ user }:{user: UserType}) => {
             <DropdownMenuContent side="right" className="w-[--radix-popper-anchor-width]">
 
                 {/* account settings */}
-                <DropdownMenuItem >
-                    <SidebarMenuButton >
-                        <Bolt size={16} />
-                        Account
-                    </SidebarMenuButton>
-                </DropdownMenuItem>
+
+                <ManageAccountModal handleOpenDialog={handleOpenDialog} />
 
                 {/* account preferences */}
                 <DropdownMenuItem>
@@ -55,11 +58,16 @@ const AdvancedProfile = ({ user }:{user: UserType}) => {
 
             </DropdownMenuContent>
         </DropdownMenu>
+
     )
 }
 
 
-const AppSidebar = ({ user }:{user: UserType}) => {
+const AppSidebar = ({ user, sidebarLinks }: { user: UserType, sidebarLinks: SidebarLink[] }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const handleOpenDialog = () => {
+        setIsDialogOpen(true);
+    }
     return (
         <Sidebar>
             <SidebarHeader>
@@ -79,24 +87,16 @@ const AppSidebar = ({ user }:{user: UserType}) => {
             <SidebarContent>
                 <SidebarGroupContent>
                     <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <House />
-                                Home
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <CookingPot />
-                                Recipes
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <Archive size={16} />
-                                <Link to='/storage'>Storage</Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        {
+                            sidebarLinks.map((link) => (
+                                <SidebarMenuItem key={link.to}>
+                                    <SidebarMenuButton>
+                                        <link.icon className='size-4' />
+                                        <Link to={link.to}>{link.name}</Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))
+                        }
                     </SidebarMenu>
                 </SidebarGroupContent>
                 <SidebarSeparator />
@@ -121,11 +121,13 @@ const AppSidebar = ({ user }:{user: UserType}) => {
             </SidebarContent>
             {/* Footer */}
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <AdvancedProfile user={user} />
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <Dialog open={isDialogOpen} onOpenChange={() => setIsDialogOpen(false)}>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <AdvancedProfile user={user} handleOpenDialog={handleOpenDialog} />
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </Dialog>
             </SidebarFooter>
         </Sidebar>
     )

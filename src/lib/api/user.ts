@@ -46,7 +46,25 @@ const signIn = async (username: string, password: string) => {
     }
 }
 
+const deleteAccount = async () => {
+    try {
+        const endpoint = `${config.pythonEndpoint}/users/delete_user`;
+        const response = await fetch(endpoint, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        if (!response.ok) throw new Error("Error deleting account");
+        return true;
+    } catch (error) {
+        throw new Error("Error deleting account");
+    }
+};
+
 export {
     createAccount,
-    signIn
+    signIn,
+    deleteAccount
 }

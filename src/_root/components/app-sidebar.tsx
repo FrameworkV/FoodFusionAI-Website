@@ -4,7 +4,7 @@ import { ChevronsUpDown, Ellipsis, LogOut, Settings2, User } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthProvider'
 import logo from "@/assets/logo.png"
 import { UserType } from '@/types/userTypes'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { SidebarLink } from '../../components/types'
 import ManageAccountModal from './manage-account-modal'
 import { Dialog } from '@/components/ui/dialog'
@@ -65,6 +65,7 @@ const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpe
 
 
 const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sidebarLinks: SidebarLink[], chatLinkProps: any }) => {
+    const chatId = useLocation().pathname.split("/").pop();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const handleOpenDialog = () => {
         setIsDialogOpen(true);
@@ -127,7 +128,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                                                     </SidebarMenuButton>
                                                 </SidebarMenuItem>
                                             ) : chatLinkProps.chatLinks?.map((chat, index) => (
-                                                <SidebarMenuItem key={chat.title + index}>
+                                                <SidebarMenuItem key={chat.title + index} className={chatId == chat.link.split("/").pop() ? 'bg-muted rounded-md' : ''}>
                                                     <SidebarMenuButton>
                                                         <Ellipsis />
                                                         <Link to={chat.link}>

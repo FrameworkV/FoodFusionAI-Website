@@ -31,12 +31,6 @@ const RootSidebar = () => {
     });
     const [isChatNavigationVisible, setIsChatNavigationVisible] = useState(false);
 
-
-    useEffect(() => {
-        console.log("Chat links updated:", chatLinks);
-    }, [chatLinks]);
-
-
     useEffect(() => {
         if (pathname.includes("/generate-recipe")) {
             setIsChatNavigationVisible(true)

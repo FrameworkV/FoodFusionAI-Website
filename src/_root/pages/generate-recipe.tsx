@@ -103,8 +103,14 @@ const GenerateRecipe = () => {
 
 const ChatWindow = ({ messages, createResponseHandler, setRequest }:{messages: MessageType[], createResponseHandler:()=>void, setRequest:React.Dispatch<React.SetStateAction<string>>}) => {
     const { pathname } = useLocation();
-    const onInputChange = (value:string) => {
-        setRequest(value)
+    const onInputChange = (changedValue:string) => {
+        setRequest(changedValue);
+    }
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            createResponseHandler();
+        }        
     }
     return pathname === "/generate-recipe" ? (
         <>

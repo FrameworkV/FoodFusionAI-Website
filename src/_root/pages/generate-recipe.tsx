@@ -9,6 +9,9 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { set } from "react-hook-form"
+import Loader from "@/components/loader"
+import { AIResponseLoader } from "../components/ai-response-loader"
 
 
 enum FromEnum {
@@ -25,11 +28,16 @@ interface MessageType {
 const GenerateRecipe = () => {
     const { pathname } = useLocation()
     const navigate = useNavigate()
+
     const [request, setRequest] = useState<string>("")
+    // const [chatId, setChatId] = useState("")
     const [messages, setMessages] = useState<MessageType[]>([])
     const [modelOptions] = useState<string[]>(["g-01-base", "g-01-reasoning"]) //TODO: fetch model options
     const [model, setModel] = useState(modelOptions[0])
+    const [isResponseLoading, setIsResponseLoading] = useState(false);
+
     const chatContainerRef = useRef(null);
+
 
     useEffect(() => {
         (async () => {
@@ -39,6 +47,7 @@ const GenerateRecipe = () => {
                 if (chatId) {
                     // get messages
                     const messages = await getMessages(chatId);
+                    console.log("fetched messages: ", messages);
                     // transform message types to enum
                     messages.forEach((message: MessageType) => {
                         message.role = message.role === "ai" ? FromEnum.ai : FromEnum.human
@@ -56,31 +65,39 @@ const GenerateRecipe = () => {
         }
     }, [messages]);
 
-
     const createResponseHandler = async () => {
-        // clear input box
-        setRequest("");
 
-        setMessages(prev => [...prev, { message: request, role: FromEnum.human }])
+        setIsResponseLoading(true); // set loading state
+        let isLoading = true;
+
+        let isNewChat = false;
+
+        setRequest("");  // clear input box
+
+
         let chatId = ""
+
 
         if (pathname === "/generate-recipe") {
             chatId = uuidv4()
             isNewChat = true;
             navigate(`/generate-recipe/${chatId}`)
+            setMessages([{ message: request, role: FromEnum.human }])
         } else {
             chatId = pathname.split("/").pop() || uuidv4()
+            setMessages(prev => [...prev, { message: request, role: FromEnum.human }])
         }
 
         const responseStream = await generateRecipe({ chatId, request })
-
 
         // handle stream
         if (!responseStream.body) return null // TODO: handle error
 
         const reader = responseStream.body.getReader();
         const decoder = new TextDecoder("utf-8");
-        // const messageId = uuidv4()
+
+
+
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -88,18 +105,26 @@ const GenerateRecipe = () => {
             console.log("dec: ", decodedValue)
             // console.log("dec: ", decodedValue)
             let res = parseLLMResponse(decodedValue).replace(/\\n/g, "\n");
-            console.log("result: ", res)
+
+            if (isLoading) {
+                isLoading = false;
+                setIsResponseLoading(false);
+            }
+            // console.log("result: ", res)
             setMessages(prev => {
                 const lastMsg = prev[prev.length - 1];
                 if (lastMsg?.role === FromEnum.ai) {
-                  return [...prev.slice(0, -1), { message: lastMsg.message + res, role: FromEnum.ai }];
+                    return [...prev.slice(0, -1), { message: lastMsg.message + res, role: FromEnum.ai }];
                 }
                 return [...prev, { message: res, role: FromEnum.ai }];
-              });
+            });
         }
 
         // TODO: check if chatid alread exist
         // if not, call the fetch chats function, so the new chat gets instantly added to the sidebar
+        if (isNewChat) {
+            fetchChats()
+        }
     }
 
     return (
@@ -121,26 +146,25 @@ const GenerateRecipe = () => {
             </div>
             {/* Chat window */}
             <div className="h-full overflow-hidden">
-
-                <ChatWindow messages={messages} createResponseHandler={createResponseHandler} request={request} setRequest={setRequest} chatContainerRef={chatContainerRef} />
+                <ChatWindow messages={messages} createResponseHandler={createResponseHandler} request={request} setRequest={setRequest} chatContainerRef={chatContainerRef} isResponseLoading={isResponseLoading} />
             </div>
         </div>
 
     )
 }
 
-const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chatContainerRef }: { messages: MessageType[], createResponseHandler: () => void, request: string, setRequest: React.Dispatch<React.SetStateAction<string>>, chatContainerRef: React.RefObject<HTMLDivElement> }) => {
+const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chatContainerRef, isResponseLoading }: { messages: MessageType[], createResponseHandler: () => void, request: string, setRequest: React.Dispatch<React.SetStateAction<string>>, chatContainerRef: React.RefObject<HTMLDivElement>, isResponseLoading: boolean }) => {
     const { pathname } = useLocation();
-    const onInputChange = (changedValue:string) => {
+    const onInputChange = (changedValue: string) => {
         setRequest(changedValue);
     }
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             createResponseHandler();
-        }        
+        }
     }
-    return pathname === "/generate-recipe" ? (
+    return pathname && pathname == "/generate-recipe" ? (
         <>
             {/* New chat window */}
             <div className="w-full h-full flex flex-col justify-center items-center gap-8">
@@ -179,13 +203,19 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                                 )
                             }
                         })
+
                     }
+                    {isResponseLoading && (
+                        <div className="w-full h-4 relative">
+                            <AIResponseLoader/>
+                        </div>
+                    )}
                 </div>
             </div>
             {/* Input field */}
             <div className="flex w-full justify-center items-center px-4">
                 <div className="flex p-2 bg-muted rounded-xl w-full max-w-[40em]">
-                    <Textarea value={request} onChange={({target})=>onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
+                    <Textarea value={request} onChange={({ target }) => onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
                     <Button onClick={() => createResponseHandler()}><Send /></Button>
                 </div>
             </div>

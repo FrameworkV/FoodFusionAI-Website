@@ -70,7 +70,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
         setIsDialogOpen(true);
     }
     return (
-        <Sidebar>
+        <Sidebar className='overflow-auto h-full flex flex-col'>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -85,8 +85,8 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
             <SidebarSeparator />
 
             {/* Content */}
-            <SidebarContent>
-                <SidebarGroupContent>
+            <SidebarContent className=' flex-col'>
+                <SidebarGroupContent className=''>
                     <SidebarMenu>
                         {
                             sidebarLinks.map((link) => (
@@ -102,46 +102,48 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                 </SidebarGroupContent>
                 <SidebarSeparator />
                 {/* Chats */}
-                {
-                    chatLinkProps.isVisible && (
-                        <>
-                            <SidebarGroupLabel>Chats</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    {
-                                        chatLinkProps.isLoading ? (
-                                            <SidebarMenuItem>
-                                                {
-                                                    Array.from({ length: 3 }).map((_, index) => (
-                                                        <SidebarMenuButton key={index} className='py-4'>
-                                                            <Skeleton  className='w-full h-6 rounded-md' />
-                                                        </SidebarMenuButton>
-                                                    ))
-                                                }
-                                            </SidebarMenuItem>
-                                        ) : chatLinkProps.chatLinks?.length == 0 ? (
-                                            <SidebarMenuItem>
-                                                <SidebarMenuButton>
-                                                    No chats available
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ) : chatLinkProps.chatLinks?.map((chat,index) => (
-                                            <SidebarMenuItem key={chat.title+index}>
-                                                <SidebarMenuButton>
-                                                    <Ellipsis />
-                                                    <Link to={chat.link}>
-                                                        {chat.title}
-                                                    </Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ))
-                                    }
+                <div className='flex-1 min-h-0'>
+                    {
+                        chatLinkProps.isVisible && (
+                            <div className='flex flex-col h-full'>
+                                <SidebarGroupLabel>Chats</SidebarGroupLabel>
+                                <SidebarGroupContent className='h-full overflow-hidden'>
+                                    <SidebarMenu className='h-full overflow-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'>
+                                        {
+                                            chatLinkProps.isLoading ? (
+                                                <SidebarMenuItem>
+                                                    {
+                                                        Array.from({ length: 3 }).map((_, index) => (
+                                                            <SidebarMenuButton key={index} className='py-4'>
+                                                                <Skeleton className='w-full h-6 rounded-md' />
+                                                            </SidebarMenuButton>
+                                                        ))
+                                                    }
+                                                </SidebarMenuItem>
+                                            ) : chatLinkProps.chatLinks?.length == 0 ? (
+                                                <SidebarMenuItem>
+                                                    <SidebarMenuButton>
+                                                        No chats available
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            ) : chatLinkProps.chatLinks?.map((chat, index) => (
+                                                <SidebarMenuItem key={chat.title + index}>
+                                                    <SidebarMenuButton>
+                                                        <Ellipsis />
+                                                        <Link to={chat.link}>
+                                                            {chat.title}
+                                                        </Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            ))
+                                        }
 
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </>
-                    )
-                }
+                                    </SidebarMenu>
+                                </SidebarGroupContent>
+                            </div>
+                        )
+                    }
+                </div>
             </SidebarContent>
             {/* Footer */}
             <SidebarFooter>

@@ -9,6 +9,7 @@ import { SidebarLink } from '../../components/types'
 import ManageAccountModal from './manage-account-modal'
 import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpenDialog: () => void }) => {
 
@@ -63,7 +64,7 @@ const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpe
 }
 
 
-const AppSidebar = ({ user, sidebarLinks }: { user: UserType, sidebarLinks: SidebarLink[] }) => {
+const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sidebarLinks: SidebarLink[], chatLinkProps: any }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const handleOpenDialog = () => {
         setIsDialogOpen(true);
@@ -101,23 +102,46 @@ const AppSidebar = ({ user, sidebarLinks }: { user: UserType, sidebarLinks: Side
                 </SidebarGroupContent>
                 <SidebarSeparator />
                 {/* Chats */}
-                <SidebarGroupLabel>Chats</SidebarGroupLabel>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <Ellipsis />
-                                ExampleChat1
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <Ellipsis />
-                                ExampleChat2
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
+                {
+                    chatLinkProps.isVisible && (
+                        <>
+                            <SidebarGroupLabel>Chats</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {
+                                        chatLinkProps.isLoading ? (
+                                            <SidebarMenuItem>
+                                                {
+                                                    Array.from({ length: 3 }).map((_, index) => (
+                                                        <SidebarMenuButton key={index} className='py-4'>
+                                                            <Skeleton  className='w-full h-6 rounded-md' />
+                                                        </SidebarMenuButton>
+                                                    ))
+                                                }
+                                            </SidebarMenuItem>
+                                        ) : chatLinkProps.chatLinks?.length == 0 ? (
+                                            <SidebarMenuItem>
+                                                <SidebarMenuButton>
+                                                    No chats available
+                                                </SidebarMenuButton>
+                                            </SidebarMenuItem>
+                                        ) : chatLinkProps.chatLinks?.map((chat,index) => (
+                                            <SidebarMenuItem key={chat.title+index}>
+                                                <SidebarMenuButton>
+                                                    <Ellipsis />
+                                                    <Link to={chat.link}>
+                                                        {chat.title}
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuItem>
+                                        ))
+                                    }
+
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </>
+                    )
+                }
             </SidebarContent>
             {/* Footer */}
             <SidebarFooter>

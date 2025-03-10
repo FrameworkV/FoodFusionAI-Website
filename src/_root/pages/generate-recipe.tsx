@@ -4,9 +4,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { generateRecipe, getMessages } from "@/lib/api/recipes"
 import { parseLLMResponse } from "@/utils/helperFunctions"
 import { Send } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 
 enum FromEnum {
@@ -27,6 +29,7 @@ const GenerateRecipe = () => {
     const [messages, setMessages] = useState<MessageType[]>([])
     const [modelOptions] = useState<string[]>(["g-01-base", "g-01-reasoning"]) //TODO: fetch model options
     const [model, setModel] = useState(modelOptions[0])
+    const chatContainerRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -37,7 +40,7 @@ const GenerateRecipe = () => {
                     // get messages
                     const messages = await getMessages(chatId);
                     // transform message types to enum
-                    messages.forEach((message:MessageType) => {
+                    messages.forEach((message: MessageType) => {
                         message.role = message.role === "ai" ? FromEnum.ai : FromEnum.human
                     });
                     console.log("Messages: ", messages)
@@ -45,21 +48,32 @@ const GenerateRecipe = () => {
                 }
             }
         })()
-    }, [])
-    
+    }, [pathname])
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
 
     const createResponseHandler = async () => {
+        // clear input box
+        setRequest("");
+
         setMessages(prev => [...prev, { message: request, role: FromEnum.human }])
         let chatId = ""
 
         if (pathname === "/generate-recipe") {
             chatId = uuidv4()
+            isNewChat = true;
             navigate(`/generate-recipe/${chatId}`)
         } else {
             chatId = pathname.split("/").pop() || uuidv4()
         }
 
         const responseStream = await generateRecipe({ chatId, request })
+
 
         // handle stream
         if (!responseStream.body) return null // TODO: handle error
@@ -70,17 +84,28 @@ const GenerateRecipe = () => {
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const decodedValue = decoder.decode(value);
+            const decodedValue = decoder.decode(value, { stream: true });
+            console.log("dec: ", decodedValue)
             // console.log("dec: ", decodedValue)
-            const res = parseLLMResponse(decodedValue);
-            setMessages(prev => [...prev, { message: res, role: FromEnum.ai }])
+            let res = parseLLMResponse(decodedValue).replace(/\\n/g, "\n");
+            console.log("result: ", res)
+            setMessages(prev => {
+                const lastMsg = prev[prev.length - 1];
+                if (lastMsg?.role === FromEnum.ai) {
+                  return [...prev.slice(0, -1), { message: lastMsg.message + res, role: FromEnum.ai }];
+                }
+                return [...prev, { message: res, role: FromEnum.ai }];
+              });
         }
+
+        // TODO: check if chatid alread exist
+        // if not, call the fetch chats function, so the new chat gets instantly added to the sidebar
     }
 
     return (
-        <div className="w-full h-full overflow-hidden flex flex-col">
+        <div className="w-full h-full flex flex-col">
             {/* Info window */}
-            <div className="w-max">
+            <div className="w-max px-8">
                 <Select value={model} onValueChange={(value) => setModel(value)}>
                     <SelectTrigger className="!ring-transparent">
                         <SelectValue></SelectValue>
@@ -95,13 +120,16 @@ const GenerateRecipe = () => {
                 </Select>
             </div>
             {/* Chat window */}
-            <ChatWindow messages={messages} createResponseHandler={createResponseHandler} setRequest={setRequest} />
+            <div className="h-full overflow-hidden">
+
+                <ChatWindow messages={messages} createResponseHandler={createResponseHandler} request={request} setRequest={setRequest} chatContainerRef={chatContainerRef} />
+            </div>
         </div>
 
     )
 }
 
-const ChatWindow = ({ messages, createResponseHandler, setRequest }:{messages: MessageType[], createResponseHandler:()=>void, setRequest:React.Dispatch<React.SetStateAction<string>>}) => {
+const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chatContainerRef }: { messages: MessageType[], createResponseHandler: () => void, request: string, setRequest: React.Dispatch<React.SetStateAction<string>>, chatContainerRef: React.RefObject<HTMLDivElement> }) => {
     const { pathname } = useLocation();
     const onInputChange = (changedValue:string) => {
         setRequest(changedValue);
@@ -121,41 +149,47 @@ const ChatWindow = ({ messages, createResponseHandler, setRequest }:{messages: M
                     <p className="text-sm text-muted-foreground">Or choose from your previous chats on the left</p>
                 </div>
                 <div className="w-full h-max flex gap-2 p-2 bg-muted rounded-xl ">
-                    <Textarea onChange={({ target }) => onInputChange(target.value)} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
+                    <Textarea value={request} onChange={({ target }) => onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
                     <Button onClick={() => createResponseHandler()}><Send /></Button>
                 </div>
             </div>
         </>
     ) : (
-        <>
+        <div className="flex flex-col h-full justify-center items-center">
             {/* Existing chat window */}
             {/* Messages */}
-            <div className="w-full h-full p-2 flex flex-col overflow-y-scroll">
-                {/* Right chat message */}
-                {
-                    messages.map((message: MessageType) => {
-                        if (message.role === FromEnum.human) {
-                            return (
-                                <div key={uuidv4()} className="w-full flex justify-end gap-2">
-                                    <div className="py-2 px-4 bg-muted rounded-xl text-white">{message.message}</div>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <div key={uuidv4()} className="w-full flex justify-start gap-2">
-                                    <div className="p-2 rounded-xl">{message.message}</div>
-                                </div>
-                            )
-                        }
-                    })
-                }
+            <div ref={chatContainerRef} className="flex-1 h-full w-full scroll-smooth overflow-y-scroll scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent px-4">
+                <div className="w-full flex flex-col max-w-[40em] mx-auto py-8">
+                    {/* Right chat message */}
+                    {
+                        messages.map((message: MessageType) => {
+                            if (message.role === FromEnum.human) {
+                                return (
+                                    <div key={uuidv4()} className="w-full flex justify-end gap-2">
+                                        <div className="py-2 px-4 bg-muted rounded-xl">{message.message}</div>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={uuidv4()} className="w-full flex justify-start gap-2">
+                                        <div className="p-2 rounded-xl">
+                                            <ReactMarkdown key={uuidv4()} remarkPlugins={[remarkGfm]}>{message.message}</ReactMarkdown>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        })
+                    }
+                </div>
             </div>
             {/* Input field */}
-            <div className="w-full h-max flex gap-2 p-2 bg-muted rounded-xl ">
-                <Textarea onChange={({ target }) => onInputChange(target.value)} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
-                <Button onClick={() => createResponseHandler()}><Send /></Button>
+            <div className="flex w-full justify-center items-center px-4">
+                <div className="flex p-2 bg-muted rounded-xl w-full max-w-[40em]">
+                    <Textarea value={request} onChange={({target})=>onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
+                    <Button onClick={() => createResponseHandler()}><Send /></Button>
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 

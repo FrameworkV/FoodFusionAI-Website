@@ -24,6 +24,7 @@ interface ChatLinkProps {
 const RootSidebar = () => {
     const { user } = useAuthContext();
     const { pathname } = useLocation();
+    //TODO: make more efficient - only fetch when on generate-recipe route
     const { data: chatLinks, isLoading } = useQuery({
         queryKey: ['chatLinks'],
         queryFn: getChats,
@@ -71,7 +72,7 @@ const RootSidebar = () => {
 
     return (
 
-        <SidebarProvider className='h-screen '>
+        <SidebarProvider className='h-screen'>
             <AppSidebar chatLinkProps={chatLinkProps} sidebarLinks={sidebarLinks} user={user} />
             <main className='w-full h-full'>
                 <SidebarTrigger className='absolute top-0' />

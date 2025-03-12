@@ -1,17 +1,13 @@
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { generateRecipe, getMessages } from "@/lib/api/recipes"
 import { parseLLMResponse } from "@/utils/helperFunctions"
-import { Send } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { set } from "react-hook-form"
-import Loader from "@/components/loader"
-import { AIResponseLoader } from "../components/ai-response-loader"
+import { AIResponseLoader } from "../../components/ai-response-loader"
+import InputField from "./components/input-field"
 
 
 enum FromEnum {
@@ -36,7 +32,7 @@ const GenerateRecipe = () => {
     const [model, setModel] = useState(modelOptions[0])
     const [isResponseLoading, setIsResponseLoading] = useState(false);
 
-    const chatContainerRef = useRef(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
 
     useEffect(() => {
@@ -61,6 +57,7 @@ const GenerateRecipe = () => {
 
     useEffect(() => {
         if (chatContainerRef.current) {
+            console.log("scrolltop", chatContainerRef.current.scrollTop);
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [messages]);
@@ -96,8 +93,6 @@ const GenerateRecipe = () => {
         const reader = responseStream.body.getReader();
         const decoder = new TextDecoder("utf-8");
 
-
-
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -123,7 +118,7 @@ const GenerateRecipe = () => {
         // TODO: check if chatid alread exist
         // if not, call the fetch chats function, so the new chat gets instantly added to the sidebar
         if (isNewChat) {
-            fetchChats()
+            // fetchChats()
         }
     }
 
@@ -172,10 +167,7 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                     <h2 className="text-3xl font-semibold">Let's create a new Recipe!</h2>
                     <p className="text-sm text-muted-foreground">Or choose from your previous chats on the left</p>
                 </div>
-                <div className="w-full h-max flex gap-2 p-2 bg-muted rounded-xl ">
-                    <Textarea value={request} onChange={({ target }) => onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
-                    <Button onClick={() => createResponseHandler()}><Send /></Button>
-                </div>
+                <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown}/>
             </div>
         </>
     ) : (
@@ -207,18 +199,13 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                     }
                     {isResponseLoading && (
                         <div className="w-full h-4 relative">
-                            <AIResponseLoader/>
+                            <AIResponseLoader />
                         </div>
                     )}
                 </div>
             </div>
             {/* Input field */}
-            <div className="flex w-full justify-center items-center px-4">
-                <div className="flex p-2 bg-muted rounded-xl w-full max-w-[40em]">
-                    <Textarea value={request} onChange={({ target }) => onInputChange(target.value)} onKeyDown={handleKeyDown} className="w-full h-min resize-none !ring-transparent " placeholder="Send a message to create a new Recipe..." />
-                    <Button onClick={() => createResponseHandler()}><Send /></Button>
-                </div>
-            </div>
+            <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown}/>
         </div>
     )
 }

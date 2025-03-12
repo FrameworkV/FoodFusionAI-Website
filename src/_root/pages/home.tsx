@@ -1,12 +1,13 @@
 import { useAuthContext } from '@/context/AuthProvider';
 import TypewriterComponent from 'typewriter-effect';
+import PagesWrapper from '../components/wrapper';
 
 const Home = () => {
   const { user } = useAuthContext();
   //temporary logout function
 
   return (
-    <>
+    <PagesWrapper>
       <TypewriterComponent
         onInit={(typewriter) => {
           const part1 = typewriter
@@ -29,7 +30,7 @@ const Home = () => {
         }}
       />
       <p className="text-gray-500 mt-2">Welcome to your dashboard.</p>
-    </>
+    </PagesWrapper>
   )
 }
 

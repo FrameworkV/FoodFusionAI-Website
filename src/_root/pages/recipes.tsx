@@ -1,6 +1,8 @@
+import PagesWrapper from "../components/wrapper"
+
 const Recipes = () => {
   return (
-    <div>This page is currently under development.</div>
+    <PagesWrapper>This page is currently under development.</PagesWrapper>
   )
 }
 

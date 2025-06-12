@@ -67,15 +67,11 @@ export default function FoodStoragePage() {
   }
 
   const handleAddItem = async (newItem: Omit<FoodItem, "id">) => {
-    const item: FoodItem = {
-      ...newItem,
-      id: Math.floor(Math.random() * 10_000_000_000), //TODO: use uuidv4() to generate unique ID - waiting for backend to handle UUID
-      user_id: 1, //TODO: Replace with actual user ID - not needed?
-    }
     try {
-      const response = await addItems([item]);
+      const response = await addItems([newItem]);
       if (!response) throw new Error("Failed to add item");
-      setItems([...items, item]);
+      setItems([...items, newItem]);
+      setFilteredItems([...filteredItems, newItem]);
       toast({
         title: "Item Added",
         description: `${newItem.name} has been added to your storage.`,
@@ -98,6 +94,7 @@ export default function FoodStoragePage() {
       const response = await updateItems([updatedItem]);
       if (!response) throw new Error("Failed to update item");
       setItems(items.map((item) => (item.id === updatedItem.id ? updatedItem : item)))
+      setFilteredItems(filteredItems.map((item) => (item.id === updatedItem.id ? updatedItem : item)))
       toast({
         title: "Item Updated",
         description: `${updatedItem.name} has been updated.`,
@@ -121,6 +118,7 @@ export default function FoodStoragePage() {
       const response = await deleteItems([itemToDelete!]);
       if (!response) throw new Error("Failed to delete item");
       setItems(items.filter((item) => item.id !== id))
+      setFilteredItems(filteredItems.filter((item) => item.id !== id))
       toast({
         title: "Item Deleted",
         description: `${itemToDelete?.name} has been removed from your storage.`,

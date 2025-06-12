@@ -30,7 +30,7 @@ const signIn = async (username: string, password: string) => {
         const formData = new FormData();
         formData.append("username", username);
         formData.append("password", password);
-        const endpoint = `${config.pythonEndpoint}/users/login`;
+        const endpoint = `${config.pythonEndpoint}/users/auth/login`;
         const response = await fetch(endpoint, {
             method: "POST",
             mode: "cors",                        
@@ -48,7 +48,7 @@ const signIn = async (username: string, password: string) => {
 
 const deleteAccount = async () => {
     try {
-        const endpoint = `${config.pythonEndpoint}/users/delete_user`;
+        const endpoint = `${config.pythonEndpoint}/users/auth/delete_user`;
         const response = await fetch(endpoint, {
             method: "DELETE",
             headers: {

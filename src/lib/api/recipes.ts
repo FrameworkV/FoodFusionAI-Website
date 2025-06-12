@@ -27,7 +27,7 @@ export const generateRecipe = async (
 
 export const getMessages = async (chatId: string) => {
     try {
-        const endpoint = `${config.pythonEndpoint}/llm/get_chat/${chatId}`;
+        const endpoint = `${config.pythonEndpoint}/chats/get_chat/${chatId}`;
         const response = await fetch(endpoint, {
             method: "get",
             headers: {
@@ -46,7 +46,7 @@ export const getChats = async () => {
     try {
         // track execution time
         console.time("getChats");
-        const endpoint = `${config.pythonEndpoint}/llm/get_chats`;
+        const endpoint = `${config.pythonEndpoint}/chats/get_chats`;
         const response = await fetch(endpoint, {
             method: "get",
             headers: {
@@ -73,7 +73,7 @@ export const getChats = async () => {
 
 export const deleteChat = async (chadId: string) => {
     try {
-        const endpoint = `${config.pythonEndpoint}/llm/delete_chat/${chadId}`;
+        const endpoint = `${config.pythonEndpoint}/chats/delete_chat/${chadId}`;
         const response = await fetch(endpoint, {
             method: "delete",
             headers: {
@@ -86,3 +86,5 @@ export const deleteChat = async (chadId: string) => {
         throw new Error("Error deleting chat");
     }
 };
+
+

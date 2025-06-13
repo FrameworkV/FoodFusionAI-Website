@@ -1,7 +1,6 @@
 import AppSidebar from '@/_root/components/app-sidebar'
 import { SidebarLink } from '@/components/types'
-import { Dialog } from '@/components/ui/dialog'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { useAuthContext } from '@/context/AuthProvider'
 import { getChats } from '@/lib/api/recipes'
 import { useQuery } from '@tanstack/react-query'
@@ -74,15 +73,20 @@ const RootSidebar = () => {
 
         <SidebarProvider className='h-screen'>
             <AppSidebar chatLinkProps={chatLinkProps} sidebarLinks={sidebarLinks} user={user} />
-            <main className='w-full h-full'>
-                <SidebarTrigger className='absolute top-0' />
-                <div className='w-full h-full flex '>
-                    <div className='text-xl  w-full h-full mx-auto'>
-                        {/* Content */}
-                        <Outlet />
+            <SidebarInset className='overflow-hidden'>
+                <div className="flex flex-1 flex-col ">
+                    <div className="@container/main flex flex-1 flex-col py-4 px-2">
+                        <div className='p-4 absolute top-0 left-0'>
+                            <SidebarTrigger className="" />
+                        </div>
+                        <div className="flex flex-col ">
+                            <div className="px-4 lg:px-6">
+                                <Outlet />
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </main>
+            </SidebarInset>
         </SidebarProvider >
     )
 }

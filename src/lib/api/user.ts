@@ -15,6 +15,7 @@ const createAccount = async (username: string, email: string, password: string) 
             headers: {
                 "Content-Type": "application/json",
             },
+            mode: "cors",   
             body: JSON.stringify({ username, email, password }),
         });
         if(!response.ok) throw new Error("Error creating account");
@@ -55,6 +56,7 @@ const deleteAccount = async () => {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
             },
+            mode: "cors",   
         });
         if (!response.ok) throw new Error("Error deleting account");
         return true;

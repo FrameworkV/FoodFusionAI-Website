@@ -27,7 +27,7 @@ const AuthProvider = ({children}:{children: ReactNode})=>{
     useEffect(()=>{        
             const token = localStorage.getItem("token");
             if(token){
-                //TBD: validate token by server request
+                //TODO: validate token by server request
     
                 //get user details
                 const simulatedUser: UserType = {

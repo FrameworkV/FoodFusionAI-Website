@@ -127,7 +127,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                                                         No chats available
                                                     </SidebarMenuButton>
                                                 </SidebarMenuItem>
-                                            ) : chatLinkProps.chatLinks?.map((chat, index) => (
+                                            ) : chatLinkProps.chatLinks?.map((chat:any, index:number) => (
                                                 <SidebarMenuItem key={chat.title + index} className={chatId == chat.link.split("/").pop() ? 'bg-muted rounded-md' : ''}>
                                                     <SidebarMenuButton>
                                                         <Ellipsis />

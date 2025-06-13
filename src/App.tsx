@@ -4,7 +4,7 @@ import { SignIn, SignUp } from './_auth'
 import RootLayout from './_root/_layout'
 import { Home, Storage, GenerateRecipe, Recipes } from './_root/pages'
 import RootSidebar from './_root/_app-sidebar'
-import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() { 
   return (

@@ -1,13 +1,12 @@
 import AppSidebar from '@/_root/components/app-sidebar'
 import { SidebarLink } from '@/components/types'
-import { Dialog } from '@/components/ui/dialog'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { useAuthContext } from '@/context/AuthProvider'
 import { getChats } from '@/lib/api/recipes'
 import { useQuery } from '@tanstack/react-query'
 import { Archive, CookingPot, House, Pencil } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 
 interface ChatLink {

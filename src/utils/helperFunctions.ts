@@ -1,12 +1,12 @@
-interface ParsedResponse {
-    user_id?: string;
-    chat_id?: string;
-    model?: string;
-    response?: string;
-    streamed_response?: boolean;
-    is_last?: boolean;
-    [key: string]: string | boolean | undefined;
-}
+// interface ParsedResponse {
+//     user_id?: string;
+//     chat_id?: string;
+//     model?: string;
+//     response?: string;
+//     streamed_response?: boolean;
+//     is_last?: boolean;
+//     [key: string]: string | boolean | undefined;
+// }
 
 const parseLLMResponse = (response: string): string => {
     response = response.replace("data: ", "");

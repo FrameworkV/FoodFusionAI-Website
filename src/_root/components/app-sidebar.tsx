@@ -91,16 +91,16 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
             <SidebarSeparator />
 
             {/* Content */}
-            <SidebarContent className=' flex-col  '>
+            <SidebarContent className=' flex-col  mt-4'>
                 <SidebarGroupContent className='flex items-center '>
                     <SidebarMenu className='space-y-1 flex items-center'>
                         {
                             sidebarLinks.map((link) => (
                                 <SidebarMenuItem key={link.to} className={`${pathname === link.to && 'bg-blue-950 '} hover:bg-accent  rounded-lg transition-all duration-500 flex justify-center w-full`}>
                                     <Link to={link.to} className='w-full '>
-                                        <SidebarMenuButton className={` group-data-[collapsible=icon]:!h-10 h-10 group-data-[collapsible=icon]:!w-full !bg-transparent`}>
+                                        <SidebarMenuButton className={` group-data-[collapsible=icon]:!h-8 h-8 group-data-[collapsible=icon]:!w-full !bg-transparent`}>
                                             <link.icon className='!size-6 !mx-1'/>
-                                            <span className='truncate text-xl'>{link.name}</span>
+                                            <span className='truncate text-base'>{link.name}</span>
                                         </SidebarMenuButton>
                                     </Link>
                                 </SidebarMenuItem>

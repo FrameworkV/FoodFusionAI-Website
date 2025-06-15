@@ -14,10 +14,11 @@ import { FoodItem } from "./types"
 import ItemForm from "./item-form"
 import NotificationBanner from "./notification-banner"
 import { addItems, deleteItems, getItems, updateItems } from "@/lib/api/storage"
-import { v4 as uuidv4 } from 'uuid';
+import { Skeleton } from "@/components/ui/skeleton"
 
 
 export default function FoodStoragePage() {
+  const [itemsLoading, setItemsLoading] = useState(true);
   const [items, setItems] = useState<FoodItem[]>([])
   const [filteredItems, setFilteredItems] = useState<FoodItem[]>([])
   const [originalItems, setOriginalItems] = useState<FoodItem[]>([])
@@ -33,6 +34,7 @@ export default function FoodStoragePage() {
     setItems(items);
     setFilteredItems(items);
     setOriginalItems(JSON.parse(JSON.stringify(items)));
+    setItemsLoading(false);
   };
   useEffect(() => {
     fetchData();
@@ -162,18 +164,33 @@ export default function FoodStoragePage() {
       <FilterCard setFilteredItems={setFilteredItems} items={items} />
 
       {/* Notification Banner - notify user if they have unsaved changes*/}
-      {hasChanges && (
+      {/* {hasChanges && (
         <NotificationBanner handleSave={handleSave} handleCancel={handleCancel} />
-      )}
+      )} */}
 
-      {/* Desktop Table View */}
-      <DesktopCard filteredItems={filteredItems} handleDeleteItem={handleDeleteItem} setEditingItem={setEditingItem} setIsEditDialogOpen={setIsEditDialogOpen} />
+      {
+        itemsLoading ? (
+          <div>
+            <Skeleton className="h-8 w-1/3 mb-4 md:block hidden" />
+            <Skeleton className="h-24 w-full mb-4" />
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
 
-      {/* Mobile Card View */}
-      <MobileCard filteredItems={filteredItems} handleDeleteItem={handleDeleteItem} setEditingItem={setEditingItem} setIsEditDialogOpen={setIsEditDialogOpen} />
+            <DesktopCard filteredItems={filteredItems} handleDeleteItem={handleDeleteItem} setEditingItem={setEditingItem} setIsEditDialogOpen={setIsEditDialogOpen} />
 
-      {/* Empty State */}
-      <EmptyState filteredItems={filteredItems} items={items} setIsAddDialogOpen={setIsAddDialogOpen} />
+            {/* Mobile Card View */}
+            <MobileCard filteredItems={filteredItems} handleDeleteItem={handleDeleteItem} setEditingItem={setEditingItem} setIsEditDialogOpen={setIsEditDialogOpen} />
+
+            {/* Empty State */}
+            <EmptyState filteredItems={filteredItems} items={items} setIsAddDialogOpen={setIsAddDialogOpen} />
+          </>
+        )
+      }
+
+
+
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -194,6 +211,6 @@ export default function FoodStoragePage() {
         </DialogContent>
       </Dialog>
       <Toaster />
-    </div>
+    </div >
   )
 }

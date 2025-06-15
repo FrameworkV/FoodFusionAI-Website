@@ -25,7 +25,7 @@ const ItemForm =({
       name: initialItem?.name || "",
       quantity: initialItem?.quantity || 1,
       weight_in_gram: initialItem?.weight_in_gram || undefined,
-      category: initialItem?.category || "",
+      category: initialItem?.category || undefined,
       expiration_date: initialItem?.expiration_date || "",
       user_id: initialItem?.user_id || 1,
       ...(initialItem?.id && { id: initialItem.id }),
@@ -83,7 +83,7 @@ const ItemForm =({
   
         <div>
           <Label htmlFor="category">Category</Label>
-          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+          <Select required value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
             <SelectTrigger>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>

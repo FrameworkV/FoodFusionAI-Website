@@ -88,7 +88,7 @@ function SignUp() {
                         render={({field})=>(
                             <FormItem>
                                 <FormControl>
-                                    <Input {...field} placeholder="Password" />
+                                    <Input {...field} placeholder="Password" type='password' />
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>

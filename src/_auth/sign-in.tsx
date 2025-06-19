@@ -74,7 +74,7 @@ const form = useForm<z.infer<typeof signInSchema>>({
                         render={({field})=>(
                             <FormItem>
                                 <FormControl>
-                                    <Input {...field} placeholder="Password" />
+                                    <Input {...field} placeholder="Password" type='password' />
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>

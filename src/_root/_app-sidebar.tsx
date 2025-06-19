@@ -74,18 +74,16 @@ const RootSidebar = () => {
         <SidebarProvider className='h-screen'>
             <AppSidebar chatLinkProps={chatLinkProps} sidebarLinks={sidebarLinks} user={user} />
             <SidebarInset className='overflow-hidden'>
-                <div className="flex flex-1 flex-col ">
-                    <div className="@container/main flex flex-1 flex-col py-4 px-2">
+                {/* <div className="flex flex-1 flex-col h-full"> */}
+                    <div className="@container/main flex flex-1 flex-col py-4 px-2 h-full ">
                         <div className='p-4 absolute top-0 left-0'>
                             <SidebarTrigger className="" />
                         </div>
-                        <div className="flex flex-col ">
-                            <div className="px-4 lg:px-6">
+                        <div className="flex flex-col h-full px-4">
                                 <Outlet />
-                            </div>
                         </div>
                     </div>
-                </div>
+                {/* </div> */}
             </SidebarInset>
         </SidebarProvider >
     )

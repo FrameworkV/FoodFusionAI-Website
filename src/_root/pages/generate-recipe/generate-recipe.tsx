@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { generateRecipe, getMessages } from "@/lib/api/recipes"
+import { generateRecipe, getMessages } from "@/lib/api/llm_chats"
 import { parseLLMResponse } from "@/utils/helperFunctions"
 import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"

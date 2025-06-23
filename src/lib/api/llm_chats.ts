@@ -5,7 +5,7 @@ interface generateRecipeType {
     request: string;
 }
 
-export const generateRecipe = async (
+const generateRecipe = async (
     { chatId, request }: generateRecipeType,
 ) => {
     try {
@@ -25,7 +25,7 @@ export const generateRecipe = async (
     }
 };
 
-export const getMessages = async (chatId: string) => {
+const getMessages = async (chatId: string) => {
     try {
         const endpoint = `${config.pythonEndpoint}/chats/get_chat/${chatId}`;
         const response = await fetch(endpoint, {
@@ -33,7 +33,7 @@ export const getMessages = async (chatId: string) => {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            }
+            },
         });
         return await response.json();
     } catch (error) {
@@ -42,7 +42,7 @@ export const getMessages = async (chatId: string) => {
     }
 };
 
-export const getChats = async () => {
+const getChats = async () => {
     try {
         // track execution time
         console.time("getChats");
@@ -71,7 +71,7 @@ export const getChats = async () => {
     }
 };
 
-export const deleteChat = async (chadId: string) => {
+const deleteChat = async (chadId: string) => {
     try {
         const endpoint = `${config.pythonEndpoint}/chats/delete_chat/${chadId}`;
         const response = await fetch(endpoint, {
@@ -87,4 +87,9 @@ export const deleteChat = async (chadId: string) => {
     }
 };
 
-
+export {
+    generateRecipe,
+    getMessages,
+    getChats,
+    deleteChat,
+}

@@ -8,6 +8,9 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { AIResponseLoader } from "../../components/ai-response-loader"
 import InputField from "./components/input-field"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Check, Save } from "lucide-react"
 
 
 enum FromEnum {
@@ -122,6 +125,8 @@ const GenerateRecipe = () => {
         }
     }
 
+
+
     return (
         <div className="w-full h-full flex flex-col">
             {/* Info window */}
@@ -150,6 +155,8 @@ const GenerateRecipe = () => {
 
 const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chatContainerRef, isResponseLoading }: { messages: MessageType[], createResponseHandler: () => void, request: string, setRequest: React.Dispatch<React.SetStateAction<string>>, chatContainerRef: React.RefObject<HTMLDivElement>, isResponseLoading: boolean }) => {
     const { pathname } = useLocation();
+    const [recipeSaved, setRecipeSaved] = useState("");
+
     const onInputChange = (changedValue: string) => {
         setRequest(changedValue);
     }
@@ -159,6 +166,16 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
             createResponseHandler();
         }
     }
+
+    const handleSaveRecipe = async (saveButtonId: string) => {
+        setRecipeSaved(saveButtonId);
+        setTimeout(() => {
+            setRecipeSaved("");
+        }, 3000);
+
+        // logic to save the recipe
+
+    }
     return pathname && pathname == "/generate-recipe" ? (
         <>
             {/* New chat window */}
@@ -167,7 +184,7 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                     <h2 className="text-3xl font-semibold">Let's create a new Recipe!</h2>
                     <p className="text-sm text-muted-foreground">Or choose from your previous chats on the left</p>
                 </div>
-                <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown}/>
+                <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown} />
             </div>
         </>
     ) : (
@@ -186,10 +203,40 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                                     </div>
                                 )
                             } else {
+                                // Process message to handle <recipe> tags
+                                const processRecipeContent = (content: string) => {
+                                    const recipeRegex = /<recipe>([\s\S]*?)<\/recipe>/;
+                                    const match = content.match(recipeRegex);
+
+                                    if (match) {
+                                        const beforeRecipe = content.substring(0, match.index);
+                                        const recipeContent = match[1];
+                                        const afterRecipe = content.substring(match.index! + match[0].length);
+                                        const saveButtonId = `recipe-${message.message.length}-${recipeContent.substring(0, 20).replace(/\s+/g, '-')}`;
+
+                                        return (
+                                            <>
+                                                {beforeRecipe && <ReactMarkdown remarkPlugins={[remarkGfm]}>{beforeRecipe}</ReactMarkdown>}
+                                                <div className="bg-blue-950 bg-opacity-40 p-4 rounded-xl  my-4 flex flex-col">
+                                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{recipeContent}</ReactMarkdown>
+                                                    {recipeSaved === saveButtonId ? (
+                                                        <Button className={`mt-4 bg-green-800 text-white hover:bg-green-800`}><Check className="!size-4" />Recipe Saved</Button>
+                                                    ) : (
+                                                        <Button onClick={() => handleSaveRecipe(saveButtonId)} id={saveButtonId} className={`mt-4 bg-blue-900 text-white hover:bg-blue-950 bg-opacity-30`}><Save className="!size-4" />Save Recipe</Button>
+                                                    )}
+                                                </div>
+                                                {afterRecipe && <ReactMarkdown remarkPlugins={[remarkGfm]}>{afterRecipe}</ReactMarkdown>}
+                                            </>
+                                        );
+                                    }
+
+                                    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
+                                };
+
                                 return (
                                     <div key={uuidv4()} className="w-full flex justify-start gap-2">
                                         <div className="p-2 rounded-xl">
-                                            <ReactMarkdown key={uuidv4()} remarkPlugins={[remarkGfm]}>{message.message}</ReactMarkdown>
+                                            {processRecipeContent(message.message)}
                                         </div>
                                     </div>
                                 )
@@ -202,10 +249,10 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                             <AIResponseLoader />
                         </div>
                     )}
-                </div>
+                </div >
             </div>
             {/* Input field */}
-            <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown}/>
+            <InputField request={request} createResponseHandler={createResponseHandler} onInputChange={onInputChange} handleKeyDown={handleKeyDown} />
         </div>
     )
 }

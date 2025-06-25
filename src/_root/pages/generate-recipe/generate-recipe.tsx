@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Save } from "lucide-react"
 import { addRecipe } from "@/lib/api/recipes"
+import { customComponents } from "@/utils/customMarkdownComponents"
 
 
 enum FromEnum {
@@ -218,21 +219,21 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
 
                                         return (
                                             <>
-                                                {beforeRecipe && <ReactMarkdown remarkPlugins={[remarkGfm]}>{beforeRecipe}</ReactMarkdown>}
+                                                {beforeRecipe && <ReactMarkdown components={customComponents} remarkPlugins={[remarkGfm]}>{beforeRecipe}</ReactMarkdown>}
                                                 <div className="bg-blue-950 bg-opacity-40 p-4 rounded-xl  my-4 flex flex-col">
-                                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{recipeContent}</ReactMarkdown>
+                                                    <ReactMarkdown components={customComponents} remarkPlugins={[remarkGfm]}>{recipeContent}</ReactMarkdown>
                                                     {recipeSaved === saveButtonId ? (
                                                         <Button className={`mt-4 bg-green-800 text-white hover:bg-green-800`}><Check className="!size-4" />Recipe Saved</Button>
                                                     ) : (
                                                         <Button onClick={() => handleSaveRecipe(saveButtonId, recipeContent)} id={saveButtonId} className={`mt-4 bg-blue-900 text-white hover:bg-blue-950 bg-opacity-30`}><Save className="!size-4" />Save Recipe</Button>
                                                     )}
                                                 </div>
-                                                {afterRecipe && <ReactMarkdown remarkPlugins={[remarkGfm]}>{afterRecipe}</ReactMarkdown>}
+                                                {afterRecipe && <ReactMarkdown components={customComponents} remarkPlugins={[remarkGfm]}>{afterRecipe}</ReactMarkdown>}
                                             </>
                                         );
                                     }
 
-                                    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
+                                    return <ReactMarkdown components={customComponents} remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
                                 };
 
                                 return (

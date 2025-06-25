@@ -11,6 +11,7 @@ import InputField from "./components/input-field"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Save } from "lucide-react"
+import { addRecipe } from "@/lib/api/recipes"
 
 
 enum FromEnum {
@@ -167,14 +168,15 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
         }
     }
 
-    const handleSaveRecipe = async (saveButtonId: string) => {
+    const handleSaveRecipe = async (saveButtonId: string, recipeContent: string) => {
         setRecipeSaved(saveButtonId);
         setTimeout(() => {
             setRecipeSaved("");
         }, 3000);
 
         // logic to save the recipe
-
+        const response = await addRecipe(recipeContent);
+        console.log(response);
     }
     return pathname && pathname == "/generate-recipe" ? (
         <>
@@ -222,7 +224,7 @@ const ChatWindow = ({ messages, createResponseHandler, request, setRequest, chat
                                                     {recipeSaved === saveButtonId ? (
                                                         <Button className={`mt-4 bg-green-800 text-white hover:bg-green-800`}><Check className="!size-4" />Recipe Saved</Button>
                                                     ) : (
-                                                        <Button onClick={() => handleSaveRecipe(saveButtonId)} id={saveButtonId} className={`mt-4 bg-blue-900 text-white hover:bg-blue-950 bg-opacity-30`}><Save className="!size-4" />Save Recipe</Button>
+                                                        <Button onClick={() => handleSaveRecipe(saveButtonId, recipeContent)} id={saveButtonId} className={`mt-4 bg-blue-900 text-white hover:bg-blue-950 bg-opacity-30`}><Save className="!size-4" />Save Recipe</Button>
                                                     )}
                                                 </div>
                                                 {afterRecipe && <ReactMarkdown remarkPlugins={[remarkGfm]}>{afterRecipe}</ReactMarkdown>}

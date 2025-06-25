@@ -117,9 +117,7 @@ const deleteRecipe = async (recipes: RecipeType[])=> {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify([
-                recipes
-            ])
+            body: JSON.stringify(recipes)
         })
         if (!response.ok) {
             throw new Error("Error deleting recipe");

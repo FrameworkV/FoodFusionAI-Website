@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { CardContent } from '@/components/ui/card'
-import { Filter, Plus } from 'lucide-react'
+import { Filter, Plus, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 interface EmptyStateProps {
@@ -37,8 +37,8 @@ const EmptyState = ({ filteredItems, items }: EmptyStateProps) => {
                             <h3 className="text-lg font-semibold mb-2">No recipes yet</h3>
                             <p className="text-muted-foreground mb-4">Start by creating your first recipe</p>
                             <Button onClick={handleCreateNewRecipeChat}>
-                                <Plus className="w-4 h-4 mr-2" />
-                                Add Your First Item
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                Generate first recipe
                             </Button>
                         </div>
                     </CardContent>

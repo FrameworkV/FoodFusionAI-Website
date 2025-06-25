@@ -12,17 +12,19 @@ import { SelectValue } from "@/components/ui/select"
 import { useEffect, useState } from "react"
 import { RecipeType } from "@/lib/api/recipes"
 import { categoryToUppercase, Duration, rateDuration } from "./helper"
+import { cn } from "@/lib/utils"
 
 interface FilterProps {
     items: RecipeType[]
-    setFilteredItems: (items: RecipeType[]) => void
+    setFilteredItems: (items: RecipeType[]) => void,
+    className?: string
 }
 
 const matchesSearchItems = (searchTerm: string, ...props: string[]) => {
     return props.some((prop) => prop.toLowerCase().includes(searchTerm.toLowerCase()))
 }
 
-const FilterCard = ({ items, setFilteredItems }: FilterProps) => {
+const FilterCard = ({ items, setFilteredItems, className="" }: FilterProps) => {
     const [searchTerm, setSearchTerm] = useState("")
     const [categoryFilter, setCategoryFilter] = useState<string>("all")
     const [filterCategories, setFilterCategories] = useState<string[]>([])
@@ -65,7 +67,7 @@ const FilterCard = ({ items, setFilteredItems }: FilterProps) => {
     }
 
     return (
-        <>
+        <div className={cn(className)}>
             <Card>
                 <CardContent className="pt-6">
                     <div className="flex flex-col lg:flex-row gap-4">
@@ -132,7 +134,7 @@ const FilterCard = ({ items, setFilteredItems }: FilterProps) => {
                     </div>
                 </CardContent>
             </Card>
-        </>
+        </div>
     )
 }
 

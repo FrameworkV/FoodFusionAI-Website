@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Save } from "lucide-react"
 import { addRecipe } from "@/lib/api/recipes"
 import { customComponents } from "@/utils/customMarkdownComponents"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 enum FromEnum {
@@ -38,6 +39,8 @@ const GenerateRecipe = () => {
     const [isResponseLoading, setIsResponseLoading] = useState(false);
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
+
+    const queryClient = useQueryClient();
 
 
     useEffect(() => {
@@ -84,7 +87,7 @@ const GenerateRecipe = () => {
             chatId = uuidv4()
             isNewChat = true;
             navigate(`/generate-recipe/${chatId}`)
-            setMessages([{ message: request, role: FromEnum.human }])
+            setMessages([{ message: request, role: FromEnum.human }]);
         } else {
             chatId = pathname.split("/").pop() || uuidv4()
             setMessages(prev => [...prev, { message: request, role: FromEnum.human }])
@@ -118,6 +121,7 @@ const GenerateRecipe = () => {
                 }
                 return [...prev, { message: res, role: FromEnum.ai }];
             });
+            queryClient.invalidateQueries({ queryKey: ["chatLinks"] });
         }
 
         // TODO: check if chatid alread exist

@@ -77,6 +77,7 @@ const deleteChat = async (chadId: string) => {
         const response = await fetch(endpoint, {
             method: "delete",
             headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         });

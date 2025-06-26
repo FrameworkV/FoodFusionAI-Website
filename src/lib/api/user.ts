@@ -18,6 +18,8 @@ const createAccount = async (username: string, email: string, password: string) 
             body: JSON.stringify({ username, email, password }),
         });
         if(!response.ok) throw new Error("Error creating account");
+        localStorage.setItem("username", username);
+        localStorage.setItem("email", email);
         return signIn(username, password);
     } catch (error) {
         console.log("error:", error);
@@ -63,8 +65,26 @@ const deleteAccount = async () => {
     }
 };
 
+const validateJWT = async () => {
+    try {
+        const endpoint = `${config.pythonEndpoint}/users/validate_jwt?token=${localStorage.getItem("token")}`;
+        const response = await fetch(endpoint,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        if(!response.ok) throw new Error("Error validating JWT");
+        return true;
+    } catch (error) {
+        throw new Error("Error validating JWT")
+    }
+}
+
 export {
     createAccount,
     signIn,
-    deleteAccount
+    deleteAccount,
+    validateJWT,
 }

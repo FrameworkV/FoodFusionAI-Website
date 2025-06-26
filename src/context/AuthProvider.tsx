@@ -1,6 +1,7 @@
 import { UserType } from "@/types/userTypes";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { AuthContextType } from "./AuthContextType";
+import { validateJWT } from "@/lib/api/user";
 
 
 
@@ -8,49 +9,55 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuthContext = () => {
     const context = useContext(AuthContext);
-    if(!context){
+    if (!context) {
         throw new Error("useAuthContext must be used within AuthProvider");
     }
     return context;
 };
 
-const AuthProvider = ({children}:{children: ReactNode})=>{
+const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
     const [user, setUser] = useState<UserType>({
-        username:"",
-        email:""
+        username: "",
+        email: ""
     });
     const [token, setToken] = useState<string>("");
     const [isLoading, setIsLoading] = useState<Boolean>(true);
 
     // login user on reload
-    useEffect(()=>{        
-            const token = localStorage.getItem("token");
-            if(token){
-                //TODO: validate token by server request
-    
-                //get user details
-                const simulatedUser: UserType = {
-                    username:"testUser",
-                    email:"test@example.com"
-                }
-                setToken(token);
-                setUser(simulatedUser);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            //TODO: validate token by server request
+            validateJWT().then((response) => {
+                console.log("Token validated: ", response);
                 setIsLoggedIn(true);
-                console.log("User logged in successfully with token: ",token);
-            }else{
-                console.log("No token found");
-            }        
-            setIsLoading(false);
-    },[]);
+                console.log("User logged in successfully with token: ", token);
+                setToken(token);
+            });
+
+            // //get user details TODO: get user details from server
+            const simulatedUser: UserType = {
+                username: "testUser",
+                email: "test@example.com"
+            }
+            // setToken(token);
+            setUser(simulatedUser);
+            // setIsLoggedIn(true);
+            // console.log("User logged in successfully with token: ",token);
+        } else {
+            console.log("No token found");
+        }
+        setIsLoading(false);
+    }, []);
 
     //set token to local storage
-    useEffect(()=>{        
-        if(token!=""){
-            localStorage.setItem("token",token);
+    useEffect(() => {
+        if (token != "") {
+            localStorage.setItem("token", token);
             console.log("Token set to local storage");
         }
-    },[token]);
+    }, [token]);
     // useEffect(()=>{
     //     //check if token is available
     //     if(token){
@@ -66,22 +73,22 @@ const AuthProvider = ({children}:{children: ReactNode})=>{
     //     },2000)
     // },[]);
 
-    const logout = ()=>{
+    const logout = () => {
         setIsLoading(true);
         setToken("");
         localStorage.removeItem("token");
         setUser(
             {
-                username:"",
-                email:""
+                username: "",
+                email: ""
             }
-        )        
-        setIsLoggedIn(false);        
+        )
+        setIsLoggedIn(false);
         setIsLoading(false);
     }
 
-    
-    return(
+
+    return (
         <AuthContext.Provider value={{
             isLoggedIn,
             setIsLoggedIn,
@@ -96,5 +103,5 @@ const AuthProvider = ({children}:{children: ReactNode})=>{
             {children}
         </AuthContext.Provider>
     )
-} 
+}
 export default AuthProvider;

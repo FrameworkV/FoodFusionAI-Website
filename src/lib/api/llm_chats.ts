@@ -3,14 +3,15 @@ import { config } from "./config";
 interface generateRecipeType {
     chatId: string;
     request: string;
+    model: string;
 }
 
 const generateRecipe = async (
-    { chatId, request }: generateRecipeType,
+    { chatId, request, model }: generateRecipeType,
 ) => {
     try {
         const endpoint = `${config.pythonEndpoint}/llm/model_request`;
-        const model = "g-01-base"; // TODO: model should be passed as prop (selected by the user)
+        // const model = "g-01-base"; // TODO: model should be passed as prop (selected by the user)
         const response = await fetch(endpoint, {
             method: "post",
             headers: {

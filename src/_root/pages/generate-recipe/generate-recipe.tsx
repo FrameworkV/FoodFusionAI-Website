@@ -93,7 +93,7 @@ const GenerateRecipe = () => {
             setMessages(prev => [...prev, { message: request, role: FromEnum.human }])
         }
 
-        const responseStream = await generateRecipe({ chatId, request })
+        const responseStream = await generateRecipe({ chatId, request, model })
 
         // handle stream
         if (!responseStream.body) return null // TODO: handle error

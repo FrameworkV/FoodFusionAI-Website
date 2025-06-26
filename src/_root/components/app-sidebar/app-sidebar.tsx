@@ -1,15 +1,16 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarSeparator, useSidebar } from '../../components/ui/sidebar'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../components/ui/dropdown-menu'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarSeparator, useSidebar } from '../../../components/ui/sidebar'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../components/ui/dropdown-menu'
 import { ChevronsUpDown, Ellipsis, Home, Icon, LogOut, Settings2, User, UserIcon } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthProvider'
 import logo from "@/assets/logo.png"
 import { UserType } from '@/types/userTypes'
 import { Link, useLocation } from 'react-router-dom'
-import { SidebarLink } from '../../components/types'
-import ManageAccountModal from './manage-account-modal'
+import { SidebarLink } from '../../../components/types'
+import ManageAccountModal from '../manage-account-modal'
 import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import ChatLink from './chat-link'
 
 const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpenDialog: () => void }) => {
     const { state } = useSidebar();
@@ -24,12 +25,12 @@ const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpe
                 <SidebarMenuButton className='flex h-10 items-center justify-between  group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!w-full'>
                     <div className='flex items-center justify-center space-x-2.5 '>
                         <User className={"!mx-1 !size-6"} />
-                            <div className='flex flex-col truncate'>
-                                <span className='truncate'>{user.username}</span>
-                                <span className='text-gray-500 font-light text-xs truncate'>{user.email}</span>
-                            </div>
+                        <div className='flex flex-col truncate'>
+                            <span className='truncate'>{user.username}</span>
+                            <span className='text-gray-500 font-light text-xs truncate'>{user.email}</span>
+                        </div>
                     </div>
-                    {!isCollapsed&&<ChevronsUpDown />}
+                    {!isCollapsed && <ChevronsUpDown />}
                 </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" className="w-[--radix-popper-anchor-width]">
@@ -55,8 +56,6 @@ const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpe
                         Logout
                     </SidebarMenuButton>
                 </DropdownMenuItem>
-
-
             </DropdownMenuContent>
         </DropdownMenu>
 
@@ -67,14 +66,14 @@ const AdvancedProfile = ({ user, handleOpenDialog }: { user: UserType, handleOpe
 const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sidebarLinks: SidebarLink[], chatLinkProps: any }) => {
     const { state } = useSidebar();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const chatId = useLocation().pathname.split("/").pop();
-    const {pathname} = useLocation();
+    const { pathname } = useLocation();
 
     const isCollapsed = state === "collapsed";
 
     const handleOpenDialog = () => {
         setIsDialogOpen(true);
     }
+
     return (
         <Sidebar className='overflow-auto h-full flex flex-col' variant='inset' collapsible='icon'>
             <SidebarHeader>
@@ -99,7 +98,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                                 <SidebarMenuItem key={link.to} className={`${pathname === link.to && 'bg-blue-950 '} hover:bg-accent  rounded-lg transition-all duration-500 flex justify-center w-full`}>
                                     <Link to={link.to} className='w-full '>
                                         <SidebarMenuButton className={` group-data-[collapsible=icon]:!h-8 h-8 group-data-[collapsible=icon]:!w-full !bg-transparent`}>
-                                            <link.icon className='!size-6 !mx-1'/>
+                                            <link.icon className='!size-6 !mx-1' />
                                             <span className='truncate text-base'>{link.name}</span>
                                         </SidebarMenuButton>
                                     </Link>
@@ -112,6 +111,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                 {/* Chats */}
                 {!isCollapsed && (<div className='flex-1 min-h-0'>
                     {
+                        chatLinkProps==null?"":
                         chatLinkProps.isVisible && (
                             <div className='flex flex-col h-full'>
                                 <SidebarGroupLabel>Chats</SidebarGroupLabel>
@@ -135,14 +135,7 @@ const AppSidebar = ({ user, sidebarLinks, chatLinkProps }: { user: UserType, sid
                                                     </SidebarMenuButton>
                                                 </SidebarMenuItem>
                                             ) : chatLinkProps.chatLinks?.map((chat, index) => (
-                                                <SidebarMenuItem key={chat.title + index} className={chatId == chat.link.split("/").pop() ? 'bg-muted rounded-md' : ''}>
-                                                    <SidebarMenuButton>
-                                                        <Ellipsis />
-                                                        <Link to={chat.link}>
-                                                            {chat.title}
-                                                        </Link>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
+                                                <ChatLink key={chat.title + index} chat={chat} />
                                             ))
                                         }
 

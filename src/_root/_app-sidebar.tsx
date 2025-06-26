@@ -1,4 +1,4 @@
-import AppSidebar from '@/_root/components/app-sidebar'
+import AppSidebar from '@/_root/components/app-sidebar/app-sidebar'
 import { SidebarLink } from '@/components/types'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { useAuthContext } from '@/context/AuthProvider'
@@ -23,11 +23,15 @@ interface ChatLinkProps {
 const RootSidebar = () => {
     const { user } = useAuthContext();
     const { pathname } = useLocation();
+    const [chatLinkProps, setChatLinkProps] = useState<ChatLinkProps|null>(null);
+
+    const isGenerateRecipe = pathname.includes("/generate-recipe");
     //TODO: make more efficient - only fetch when on generate-recipe route
     const { data: chatLinks, isLoading } = useQuery({
         queryKey: ['chatLinks'],
         queryFn: getChats,
-        staleTime: 20000, // Cache data for 20 seconds before refetching
+        staleTime: 20000, // Cache data for 20 seconds before refetching,
+        enabled: isGenerateRecipe
     });
     const [isChatNavigationVisible, setIsChatNavigationVisible] = useState(false);
 
@@ -63,11 +67,16 @@ const RootSidebar = () => {
         },
     ]
 
-    const chatLinkProps: ChatLinkProps = {
-        chatLinks: chatLinks,
-        isVisible: isChatNavigationVisible,
-        isLoading: isLoading
-    }
+    useEffect(() => {
+        const chatLinkProps: ChatLinkProps = {
+            chatLinks: chatLinks,
+            isVisible: isChatNavigationVisible,
+            isLoading: isLoading
+        }
+        setChatLinkProps(chatLinkProps);
+    }, [chatLinks])
+
+
 
     return (
 
@@ -75,14 +84,14 @@ const RootSidebar = () => {
             <AppSidebar chatLinkProps={chatLinkProps} sidebarLinks={sidebarLinks} user={user} />
             <SidebarInset className='overflow-hidden'>
                 {/* <div className="flex flex-1 flex-col h-full"> */}
-                    <div className="@container/main flex flex-1 flex-col py-4 px-2 h-full ">
-                        <div className='p-4 absolute top-0 left-0'>
-                            <SidebarTrigger className="" />
-                        </div>
-                        <div className="flex flex-col h-full px-4">
-                                <Outlet />
-                        </div>
+                <div className="@container/main flex flex-1 flex-col py-4 px-2 h-full ">
+                    <div className='p-4 absolute top-0 left-0'>
+                        <SidebarTrigger className="" />
                     </div>
+                    <div className="flex flex-col h-full px-4">
+                        <Outlet />
+                    </div>
+                </div>
                 {/* </div> */}
             </SidebarInset>
         </SidebarProvider >

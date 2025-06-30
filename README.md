@@ -111,11 +111,13 @@
 - **React Hooks** - Local state and side effects
 
 ### AI Integration
-- **OpenAI API** - Recipe generation and chat functionality
 - **Streaming Responses** - Real-time AI response handling
 - **Markdown Rendering** - Rich text recipe formatting
 
 ---
 
 ## 🔗 Backend Repository
-For more information about the backend please visit the backend repository:[FoodFusionAI (Backend)](https://github.com/FrameworkV/FoodFusionAI)
+For more information about the backend please visit the backend repository: [FoodFusionAI (Backend)](https://github.com/FrameworkV/FoodFusionAI)
+
+### For developers
+If you want to contribute, follow [this](DEVELOPMENT.md) guide.

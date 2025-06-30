@@ -1,7 +1,7 @@
 # FoodFusionAI Development Guidelines
 
 (Development guide for the backend can be found
-[here](https://github.com/FrameworkV/FoodFusionAI))
+[here](https://github.com/FrameworkV/FoodFusionAI/blob/feature/api/DEVELOPMENT.md))
 
 Welcome to FoodFusionAI! This guide will help you get started with contributing
 to our project.

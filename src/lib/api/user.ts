@@ -82,9 +82,29 @@ const validateJWT = async () => {
     }
 }
 
+const updateUser = async ({username, email}:{username?:string, email?:string}) => {
+    try {
+        const endpoint = `${config.pythonEndpoint}/users/auth/update_user`;
+        const response = await fetch(endpoint, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ username, email }),
+        });
+        console.log("response:", response)
+        if(!response.ok) throw new Error("Error updating user");
+        return true;
+    }catch (error) {
+        throw new Error("Error updating user");
+    }
+}
+
 export {
     createAccount,
     signIn,
     deleteAccount,
     validateJWT,
+    updateUser,
 }

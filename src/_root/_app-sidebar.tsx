@@ -23,7 +23,7 @@ interface ChatLinkProps {
 const RootSidebar = () => {
     const { user } = useAuthContext();
     const { pathname } = useLocation();
-    const [chatLinkProps, setChatLinkProps] = useState<ChatLinkProps|null>(null);
+    // const [chatLinkProps, setChatLinkProps] = useState<ChatLinkProps | null>(null);
 
     const isGenerateRecipe = pathname.includes("/generate-recipe");
     //TODO: make more efficient - only fetch when on generate-recipe route
@@ -67,14 +67,12 @@ const RootSidebar = () => {
         },
     ]
 
-    useEffect(() => {
-        const chatLinkProps: ChatLinkProps = {
-            chatLinks: chatLinks,
-            isVisible: isChatNavigationVisible,
-            isLoading: isLoading
-        }
-        setChatLinkProps(chatLinkProps);
-    }, [chatLinks])
+    const chatLinkProps: ChatLinkProps = {
+        chatLinks: chatLinks,
+        isVisible: isChatNavigationVisible,
+        isLoading: isLoading
+    }
+
 
 
 

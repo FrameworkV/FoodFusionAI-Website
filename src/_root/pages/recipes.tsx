@@ -32,7 +32,7 @@ const Recipes = () => {
           </div>
         </div>
         <FilterCard className="px-16" items={recipes} setFilteredItems={setFilteredRecipes} />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-auto px-16 pb-16">
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-auto px-16 pb-16 ${filteredRecipes.length==0&&"lg:grid-cols-1"} `}>
           {isLoading == true ? (
             <>
               <Skeleton className="w-full h-32" />
